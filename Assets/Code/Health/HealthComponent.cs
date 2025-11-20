@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HealthComponent : IHealthComponent
 {
-    [SerializeField] private float health;
+    [SerializeField] private float health = 100;
     [SerializeField] private float maxHealth = 100;
 
     public float Health 

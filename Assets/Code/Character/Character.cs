@@ -7,6 +7,9 @@ public abstract class Character : MonoBehaviour
     public IHealthComponent HealthComponent { get; protected set;}
     public IMoveComponent MoveComponent { get; protected set;}
     public IAttackComponent AttackComponent { get; protected set;}
+    public IInputProvider InputProvider { get; protected set; }
+    public CharacterData Data => characterData;
+    
 
     public virtual void Initialize()
     {
