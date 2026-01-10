@@ -21,16 +21,15 @@ public class CharacterFactory : MonoBehaviour
     public Character GetCharacter(CharacterType type)
     {
         Character character = null;
+
         if (!disabledCharacters.ContainsKey(type))
         {
-            if (disabledCharacters[type].Count > 0)
-            {
-                character = disabledCharacters[type].Dequeue();
-            }
-        }
-        else
-        {
             disabledCharacters.Add(type, new Queue<Character>());
+        }
+
+        if (disabledCharacters[type].Count > 0)
+        {
+            character = disabledCharacters[type].Dequeue();
         }
 
         if (character == null)
@@ -39,9 +38,9 @@ public class CharacterFactory : MonoBehaviour
         }
 
         activeCharacters.Add(character);
-
         return character;
     }
+
     
     public void ReturnCharacter(Character character)
     {

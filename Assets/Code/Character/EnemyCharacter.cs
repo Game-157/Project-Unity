@@ -5,58 +5,70 @@ public class EnemyCharacter : Character
     [SerializeField] private AiState aiState;
     [SerializeField] private Character characterTarget;
 
+    public override Character CharacterTarget => characterTarget;
     public override void Initialize()
     {
         base.Initialize();
         HealthComponent = new HealthComponent();
+        HealthComponent.Initialize(this);
+        
     }
 
     protected override void Update()
     {
         if (HealthComponent.Health <= 0)
+            return;
+
+        if (characterTarget == null)
         {
+            aiState = AiState.Idle;
             return;
         }
+
+        float distance = Vector3.Distance(transform.position, characterTarget.transform.position);
 
         switch (aiState)
         {
             case AiState.Idle:
-                 
-                return;
-            
+                aiState = AiState.MoveToTarget;
+                break;
+
             case AiState.MoveToTarget:
-                Vector3 moveDirection = characterTarget.transform.position - transform.position;
-                moveDirection.Normalize();
+                if (distance <= AttackComponent.AttackRange)
+                {
+                    aiState = AiState.AttackToTarget;
+                    break;
+                }
 
-                MoveComponent.Move(moveDirection);
-                MoveComponent.Rotation(moveDirection);
+                Vector3 dir = (characterTarget.transform.position - transform.position).normalized;
+                MoveComponent.Move(dir);
+                MoveComponent.Rotation(dir);
+                break;
 
-                return;
-                
             case AiState.AttackToTarget:
-                if (Vector3.Distance(transform.position, characterTarget.transform.position) <= AttackComponent.AttackRange)
+                if (distance > AttackComponent.AttackRange)
                 {
-                    MoveComponent.Move(Vector3.zero);
-
-                    Vector3 direction = characterTarget.transform.position - transform.position;
-                    direction.y = 0;
-                    if (direction != Vector3.zero)
-                        MoveComponent.Rotation(direction.normalized);
-
-                    AttackComponent.MakeDamage(characterTarget);
-                    Debug.Log("Attack to Target invisible baseball bats");
-                    return;
+                    aiState = AiState.MoveToTarget;
+                    break;
                 }
 
-                else
-                {
-                    Vector3 toTarget = characterTarget.transform.position - transform.position;
-                    toTarget.Normalize();
+                MoveComponent.Move(Vector3.zero);
 
-                    MoveComponent.Move(toTarget);
-                    MoveComponent.Rotation(toTarget);
-                return;
-                }
+                Vector3 lookDir = characterTarget.transform.position - transform.position;
+                lookDir.y = 0;
+                if (lookDir != Vector3.zero)
+                    MoveComponent.Rotation(lookDir.normalized);
+
+                AttackComponent.MakeDamage(characterTarget);
+                break;
         }
     }
+
+
+    public void SetTarget(Character target)
+    {
+        characterTarget = target;
+        aiState = AiState.MoveToTarget;
+    }
+
 }

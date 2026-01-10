@@ -1,11 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class HealthComponent : IHealthComponent
 {
     [SerializeField] private float health = 100;
     [SerializeField] private float maxHealth = 100;
+
+    private Character selfCharacter;
+
+    public event Action<Character> OnCharacterDeath;
+
 
     public float Health 
     { 
@@ -43,6 +49,13 @@ public class HealthComponent : IHealthComponent
 
     private void SetDeath()
     {
+        OnCharacterDeath?.Invoke(selfCharacter);
         Debug.Log("Character is dead");
+        
+    }
+
+    public void Initialize(Character selfCharacter)
+    {
+        this.selfCharacter = selfCharacter;
     }
 }

@@ -9,9 +9,11 @@ public abstract class Character : MonoBehaviour
     public IMoveComponent MoveComponent { get; protected set;}
     public IAttackComponent AttackComponent { get; protected set;}
     public IInputProvider InputProvider { get; protected set; }
-    public CharacterData Data => characterData;
+    public CharacterData CharacterData => characterData;
 
-    public CharacterType CharacterType => CharacterType;
+    public CharacterType CharacterType => characterType;
+
+    public virtual Character CharacterTarget { get; }
     
 
     public virtual void Initialize()

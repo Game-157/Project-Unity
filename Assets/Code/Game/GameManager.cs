@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 
@@ -47,10 +48,13 @@ public class GameManager : MonoBehaviour
 
         Character player = characterFactory.GetCharacter(CharacterType.Hero);
         player.transform.position = Vector3.zero;
+        player.gameObject.SetActive(true);
         player.Initialize();
+        player.HealthComponent.OnCharacterDeath += CharacterDeathHandler;
 
         gameSessionTime = 0;
         timeBetweenEnemySpawn = gameData.TimeBetweenEnemySpawn;
+        scoreSystem.StartGame();
 
         isGameActive = true;
     }
@@ -82,39 +86,55 @@ public class GameManager : MonoBehaviour
         switch (deathCharacter.CharacterType)
         {
             case CharacterType.Hero:
-                Debug.Log("Game Over!");
-                isGameActive = false;
+                GameOver();
                 break;
             case CharacterType.DefaultEnemy:
-                scoreSystem.AddScore(gameData.ScorePerEnemy);
-                characterFactory.ReturnCharacter(deathCharacter);
+                scoreSystem.AddScore(deathCharacter.CharacterData.ScoreCost);
                 break;
         }
+        deathCharacter.gameObject.SetActive(false);
+        characterFactory.ReturnCharacter(deathCharacter);
     }
     private void SpawnEnemy()
     {
         Character enemy = characterFactory.GetCharacter(CharacterType.DefaultEnemy);
-        Vector3 heroPosition = characterFactory.Hero.transform.position;
+        Character hero = characterFactory.Hero;
 
-        enemy.transform.position = new Vector3(heroPosition.x + GetOffset(), 0, heroPosition.z + GetOffset());
+        enemy.transform.position = new Vector3(
+            hero.transform.position.x + GetOffset(),
+            0,
+            hero.transform.position.z + GetOffset()
+        );
+
+        enemy.gameObject.SetActive(true);
         enemy.Initialize();
+        enemy.HealthComponent.OnCharacterDeath += CharacterDeathHandler;
+
+        
+        if (enemy is EnemyCharacter enemyCharacter)
+        {
+            enemyCharacter.SetTarget(hero);
+        }
 
         float GetOffset()
         {
-            bool isPluse = Random.Range(0, 100) % 2 == 0;
+            bool isPlus = Random.Range(0, 100) % 2 == 0;
             float offset = Random.Range(gameData.MinSpawnOffset, gameData.MaxSpawnOffset);
-            return isPluse ? offset : (-1 * offset);
+            return isPlus ? offset : -offset;
         }
     }
 
+
     private void GameVictory()
     {
+        scoreSystem.EndGame();
         Debug.Log("Victory!");
         isGameActive = false;
     }
 
     private void GameOver()
     {
+        scoreSystem.EndGame();
         Debug.Log("Defeat!");
         isGameActive = false;
     
