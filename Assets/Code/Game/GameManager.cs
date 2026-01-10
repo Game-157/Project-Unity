@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameData gameData;
     [SerializeField] private CharacterFactory characterFactory;
 
+    [SerializeField] private CharacterSpawnController spawnController;
+
+
     private ScoreSystem scoreSystem;
 
     private float gameSessionTime;
@@ -37,6 +40,15 @@ public class GameManager : MonoBehaviour
     {
         scoreSystem = new ScoreSystem();
         isGameActive = false;
+
+        spawnController = new CharacterSpawnController(
+        characterFactory,
+        startMaxEnemies: 3,      
+        absoluteMaxEnemies: 10,  
+        increaseInterval: 10f,   
+        increaseStep: 1          
+    );
+
     }
 
     public void StartGame()
@@ -71,7 +83,10 @@ public class GameManager : MonoBehaviour
 
         if (timeBetweenEnemySpawn <= 0)
         {
-            SpawnEnemy();
+            if (spawnController.CanSpawnEnemy())
+            {
+                SpawnEnemy();
+            }
             timeBetweenEnemySpawn = gameData.TimeBetweenEnemySpawn;
         }
 
@@ -79,6 +94,9 @@ public class GameManager : MonoBehaviour
         {
             GameVictory();
         }
+
+        spawnController.Update(Time.deltaTime);
+
     }
     
     private void CharacterDeathHandler(Character deathCharacter)
