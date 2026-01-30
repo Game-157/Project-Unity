@@ -8,7 +8,8 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameData gameData;
     [SerializeField] private CharacterFactory characterFactory;
-
+    [SerializeField] private SpawnControllerData spawnControllerData;
+    
     [SerializeField] private CharacterSpawnController spawnController;
 
 
@@ -21,6 +22,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public CharacterFactory CharacterFactory => characterFactory;
+
+    public ScoreManager ScoreManager { get; private set; }
 
     private void Awake()
     {

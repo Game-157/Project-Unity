@@ -69,6 +69,7 @@ public class HeroCharacter : Character
 
             if (Input.GetKeyDown(KeyCode.Space))
                 AttackComponent.MakeDamage(CharacterTarget);
+                Debug.Log("Attack");
             
 
         }
