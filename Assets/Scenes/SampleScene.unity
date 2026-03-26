@@ -794,7 +794,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HeroCharacterPrefab: {fileID: 3935663404825396863, guid: 70af373d52a626245be32e39af949301, type: 3}
-  EnemyCharacterPrefab: {fileID: 5983672944100951759, guid: 46fe87fc0e6f2f34aad50cde77caa4fd, type: 3}
+  EnemyCharacterPrefab: {fileID: 4076674216325253635, guid: 8e9980e3a7db35944a3dbffb58ff0fa9, type: 3}
 --- !u!1 &2091578959
 GameObject:
   m_ObjectHideFlags: 0
