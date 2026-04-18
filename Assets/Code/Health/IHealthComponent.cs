@@ -1,5 +1,5 @@
 using System;
-public interface IHealthComponent : ICharacterComponent
+public interface IHealthComponent :  ICharacterComponent
 {
     public event Action<Character> OnCharacterDeath;
 
@@ -7,5 +7,7 @@ public interface IHealthComponent : ICharacterComponent
     float MaxHealth { get; }
 
     void SetDamage(int damage);
+
+    void Kill();
 } 
  

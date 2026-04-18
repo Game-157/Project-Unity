@@ -12,10 +12,15 @@ public class NotDieComponent : IHealthComponent
 
     public void Initialize(Character selfCharacter)
     {
-        //throw new NotImplementedException();
+        
     }
 
     public void SetDamage(int gamage)
+    {
+        Debug.Log("Not Die character");
+    }
+
+    public void Kill()
     {
         Debug.Log("Not Die character");
     }

@@ -5,9 +5,16 @@ public abstract class Character : MonoBehaviour
     [SerializeField] private CharacterData characterData;
     [SerializeField] private CharacterType characterType;
 
-    public IHealthComponent HealthComponent { get; protected set;}
-    public IMoveComponent MoveComponent { get; protected set;}
-    public IAttackComponent AttackComponent { get; protected set;}
+    [SerializeField] protected HealthComponent healthComponent;
+
+    [SerializeField] private MoveComponent moveComponent;
+    [SerializeField] private AttackComponent attackComponent;
+
+
+    public IMoveComponent MoveComponent { get; private set; }
+    public IAttackComponent AttackComponent { get; private set; }
+    public IHealthComponent HealthComponent { get; private set; }
+    
     public IInputProvider InputProvider { get; protected set; }
     public CharacterData CharacterData => characterData;
 
@@ -18,18 +25,27 @@ public abstract class Character : MonoBehaviour
 
     public virtual void Initialize()
     {
-        MoveComponent = new MoveComponent();
-        MoveComponent.Initialize(characterData);
+        MoveComponent = moveComponent;
+        AttackComponent = attackComponent;
+        HealthComponent = healthComponent;
 
-        AttackComponent = new AttackComponent();
-        AttackComponent.Initialize(characterData);
+        moveComponent.Initialize(this);
+        attackComponent.Initialize(this);
+        healthComponent.Initialize(this);
+
+        Debug.Log($"MOVE: {moveComponent}");
+        Debug.Log($"ATTACK: {attackComponent}");
+        Debug.Log($"HEALTH: {healthComponent}");
     }
 
-    void Start()
-    {
-        Initialize();
-    }
+    
 
     protected abstract void Update();
     
+
+    public void SetHealthComponent(IHealthComponent newHealth)
+    {
+        HealthComponent = newHealth;
+        HealthComponent.OnCharacterDeath += GameManager.Instance.CharacterDeathHandler;
+    }
 }

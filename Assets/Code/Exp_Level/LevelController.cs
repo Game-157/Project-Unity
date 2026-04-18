@@ -5,45 +5,41 @@ using TMPro;
 
 public class LevelController : MonoBehaviour
 {
-    [SerializeField] private int level = 1;
-    [SerializeField] private int maxLevel = 10;
-    [SerializeField] private int experience = 0;
-    [SerializeField] private int experienceLevelUp;
-    [SerializeField] private int experienceCrip = 15;
-
+    [SerializeField] private LevelData levelData; // Ссылка на ScriptableObject
+    
     [SerializeField] private TextMeshProUGUI levelText;
 
     private void CalculateExpForLevel(int level)
     {
-        experienceLevelUp = (int)(100 * (Mathf.Pow(1.5f, level) - 1) / 0.5f);
+        levelData.experienceLevelUp = (int)(100 * (Mathf.Pow(1.5f, level) - 1) / 0.5f);
     }
 
     void Start()
     {
-        CalculateExpForLevel(level);
+        CalculateExpForLevel(levelData.level);
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.J))
         {
-            experience += experienceCrip;
-            Debug.Log("+15 experience");
+            levelData.experience += levelData.experienceCrip;
+            Debug.Log($"+{levelData.experienceCrip} experience");
         }
 
-        if (experience >= experienceLevelUp && level < maxLevel)
+        if (levelData.experience >= levelData.experienceLevelUp && levelData.level < levelData.maxLevel)
         {
-            level++;
-            experience -= experienceLevelUp; 
-            CalculateExpForLevel(level);
+            levelData.level++;
+            levelData.experience -= levelData.experienceLevelUp; 
+            CalculateExpForLevel(levelData.level);
         }
 
-        if (level >= maxLevel)
+        if (levelData.level >= levelData.maxLevel)
         {
-            levelText.text = $"Level: {level} Experience: MAX";
+            levelText.text = $"Level: {levelData.level} Experience: MAX";
             return;
         }
 
-        levelText.text = $"Level: {level} Experience: {experience} / {experienceLevelUp}";
+        levelText.text = $"Level: {levelData.level} Experience: {levelData.experience} / {levelData.experienceLevelUp}";
     }
 }

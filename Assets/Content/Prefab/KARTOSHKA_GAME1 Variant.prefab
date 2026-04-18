@@ -122,8 +122,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterData: {fileID: -8077647386022447616}
   characterType: 2
+  healthComponent: {fileID: 4954778938019555415}
+  moveComponent: {fileID: 5802361137235382651}
+  attackComponent: {fileID: 6640459532628189806}
   aiState: 2
   characterTarget: {fileID: 0}
+--- !u!114 &4954778938019555415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5841002108787961015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0223694c31b9eb848a293d495a964621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  maxHealth: 100
+--- !u!114 &5802361137235382651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5841002108787961015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4ece56681a5b1345aef16302d4d9b8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6640459532628189806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5841002108787961015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bca2803befe6046ae974cf7c0e5e28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6504526982639613453 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 110fd9d2db6234740b14232ee48c53c3, type: 3}

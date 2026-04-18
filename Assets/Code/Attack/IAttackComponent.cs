@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IAttackComponent
+public interface IAttackComponent : ICharacterComponent
 {
     float Damage { get; }
     float AttackRange { get; }
 
-    void Initialize(CharacterData characterData);
+    float AttackCooldown { get; }
+
+    float AttackTimer { get; }
+    
     
     void MakeDamage(Character attackTarget);
 }

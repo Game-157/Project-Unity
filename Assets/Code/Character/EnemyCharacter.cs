@@ -6,11 +6,10 @@ public class EnemyCharacter : Character
     [SerializeField] private Character characterTarget;
 
     public override Character CharacterTarget => characterTarget;
+
     public override void Initialize()
     {
         base.Initialize();
-        HealthComponent = new HealthComponent();
-        HealthComponent.Initialize(this);
         
     }
 
@@ -56,6 +55,7 @@ public class EnemyCharacter : Character
 
                 Vector3 lookDir = characterTarget.transform.position - transform.position;
                 lookDir.y = 0;
+
                 if (lookDir != Vector3.zero)
                     MoveComponent.Rotation(lookDir.normalized);
 
@@ -63,7 +63,6 @@ public class EnemyCharacter : Character
                 break;
         }
     }
-
 
     public void SetTarget(Character target)
     {

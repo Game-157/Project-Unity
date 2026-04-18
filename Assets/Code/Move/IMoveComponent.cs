@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IMoveComponent
+public interface IMoveComponent : ICharacterComponent
 {
     float Speed { get; set; }
 
@@ -12,5 +12,5 @@ public interface IMoveComponent
 
     void Rotation (Vector3 direction);
 
-    void Initialize(CharacterData characterData);
+    
 }
