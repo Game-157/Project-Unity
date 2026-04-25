@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class AttackComponent : MonoBehaviour, IAttackComponent
@@ -19,28 +20,19 @@ public class AttackComponent : MonoBehaviour, IAttackComponent
         
 
     }
-    public void MakeDamage(Character attackTarget)
+    public void MakeDamage(IHealthComponent attackTarget)
     {
         if (attackTarget == null)
             return;
 
-        if (attackTarget.HealthComponent == null)
-            return;
-
         if (attackTimer > 0)
-            return; // 
-
-        float distance = Vector3.Distance(
-            selfCharacter.transform.position,
-            attackTarget.transform.position
-        );
-
-        if (distance > AttackRange)
             return;
 
-        attackTarget.HealthComponent.SetDamage((int)Damage);
+        attackTarget.SetDamage((int)Damage);
 
-        attackTimer = AttackCooldown; 
+        attackTimer = AttackCooldown;
+
+        Debug.Log($"Attacker {selfCharacter.CharacterType}, Attack: {attackTarget}, Target health: {attackTarget.Health}");
     }
 
     public void Tick(float deltaTime)

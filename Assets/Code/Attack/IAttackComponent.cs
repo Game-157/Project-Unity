@@ -11,7 +11,7 @@ public interface IAttackComponent : ICharacterComponent
 
     float AttackTimer { get; }
     
-    
-    void MakeDamage(Character attackTarget);
+    void Tick(float deltaTime);
+    void MakeDamage(IHealthComponent attackTarget);
 }
 

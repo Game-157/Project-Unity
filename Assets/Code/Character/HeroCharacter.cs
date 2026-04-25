@@ -3,41 +3,16 @@ using UnityEngine;
 
 public class HeroCharacter : Character
 {
-    public override Character CharacterTarget
-    {
-        get
-        {
-            Character target = null;
-            float minDistance = float.MaxValue;
+    private Character currentTarget;
 
-            List<Character> list = GameManager.Instance.CharacterFactory.ActiveCharacters;
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (list[i].CharacterType == CharacterType.Hero)
-                    continue;
-
-                float distance = Vector3.Distance(list[i].transform.position, transform.position);
-
-                if (distance < minDistance)
-                {
-                    target = list[i];
-                    minDistance = distance;
-                }
-            }
-
-            return target;
-        }
-    }
+    [Header("Target Settings")]
+    [SerializeField] private float enterRadius = 5f; // вход в агр
+    [SerializeField] private float exitRadius = 6f;  // выход из агра
 
     public override void Initialize()
     {
         base.Initialize();
-
         InputProvider = new HeroInputProvider();
-
-        HealthComponent.Initialize(this);
-        AttackComponent.Initialize(this);
     }
 
     protected override void Update()
@@ -48,27 +23,95 @@ public class HeroCharacter : Character
         if (HealthComponent.Health <= 0)
             return;
 
-        Vector3 moveDir = InputProvider.GetMoveDirection();
+        AttackComponent.Tick(Time.deltaTime);
 
-        if (moveDir != Vector3.zero)
+        Vector3 input = InputProvider.GetMoveDirection();
+
+            Vector3 camForward = Camera.main.transform.forward;
+            Vector3 camRight = Camera.main.transform.right;
+
+            // убираем наклон камеры
+            camForward.y = 0;
+            camRight.y = 0;
+
+            camForward.Normalize();
+            camRight.Normalize();
+
+            Vector3 moveDir = camForward * input.z + camRight * input.x;
+
+        // --- ОБНОВЛЕНИЕ ЦЕЛИ ---
+        UpdateTarget();
+
+        // --- ПОВОРОТ ---
+        if (currentTarget != null)
         {
-            MoveComponent.Move(moveDir);
-            MoveComponent.Rotation(moveDir);
-        }
+            Vector3 lookDir = currentTarget.transform.position - transform.position;
+            lookDir.y = 0;
 
-        Character target = CharacterTarget;
-
-        if (target != null)
-        {
-            Vector3 direction = target.transform.position - transform.position;
-            MoveComponent.Rotation(direction);
-
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (lookDir != Vector3.zero)
             {
-                AttackComponent.MakeDamage(target);
+                MoveComponent.Rotation(lookDir.normalized);
+            }
+
+            // (опционально) атака
+            if (currentTarget != null)
+            {
+                AttackComponent.MakeDamage( currentTarget.HealthComponent);
+            }
+        }
+        else
+        {
+            if (moveDir != Vector3.zero)
+            {
+                MoveComponent.Rotation(moveDir);
             }
         }
 
+        // --- ДВИЖЕНИЕ ---
         MoveComponent.Move(moveDir);
+    }
+
+    private void UpdateTarget()
+    {
+        // если цели нет — ищем в радиусе
+        if (currentTarget == null)
+        {
+            currentTarget = GetTargetInRadius(enterRadius);
+        }
+        else
+        {
+            // проверяем дистанцию до текущей цели
+            float dist = Vector3.Distance(transform.position, currentTarget.transform.position);
+
+            // если вышел за радиус — теряем цель
+            if (dist > exitRadius || currentTarget.HealthComponent.Health <= 0)
+            {
+                currentTarget = null;
+            }
+        }
+    }
+
+    private Character GetTargetInRadius(float radius)
+    {
+        Character target = null;
+        float minDistance = radius;
+
+        List<Character> list = GameManager.Instance.CharacterFactory.ActiveCharacters;
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (list[i].CharacterType == CharacterType.Hero)
+                continue;
+
+            float dist = Vector3.Distance(transform.position, list[i].transform.position);
+
+            if (dist <= minDistance)
+            {
+                minDistance = dist;
+                target = list[i];
+            }
+        }
+
+        return target;
     }
 }

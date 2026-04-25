@@ -33,9 +33,7 @@ public abstract class Character : MonoBehaviour
         attackComponent.Initialize(this);
         healthComponent.Initialize(this);
 
-        Debug.Log($"MOVE: {moveComponent}");
-        Debug.Log($"ATTACK: {attackComponent}");
-        Debug.Log($"HEALTH: {healthComponent}");
+
     }
 
     
@@ -43,9 +41,5 @@ public abstract class Character : MonoBehaviour
     protected abstract void Update();
     
 
-    public void SetHealthComponent(IHealthComponent newHealth)
-    {
-        HealthComponent = newHealth;
-        HealthComponent.OnCharacterDeath += GameManager.Instance.CharacterDeathHandler;
-    }
+    
 }

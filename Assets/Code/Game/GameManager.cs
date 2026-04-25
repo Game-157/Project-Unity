@@ -6,6 +6,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CharacterFactory characterFactory;
     [SerializeField] private LevelConfig levelConfig;
 
+    [SerializeField] private GameObject startButton;
+
+    [SerializeField] private UI_Manager uiManager;
+
     private ScoreSystem scoreSystem;
     private WaveManager waveManager;
 
@@ -15,6 +19,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public CharacterFactory CharacterFactory => characterFactory;
+
+    [SerializeField] private BaseBuilding baseBuilding;
+
+    public BaseBuilding BaseBuilding => baseBuilding;
 
     private void Awake()
     {
@@ -32,6 +40,8 @@ public class GameManager : MonoBehaviour
 
     private void Initialize()
     {
+        
+
         scoreSystem = new ScoreSystem();
         isGameActive = false;
 
@@ -43,6 +53,8 @@ public class GameManager : MonoBehaviour
     {
         if (isGameActive) return;
 
+        startButton.SetActive(false);
+
         Character player = characterFactory.GetCharacter(CharacterType.Hero);
         player.transform.position = Vector3.zero;
         player.gameObject.SetActive(true);
@@ -50,9 +62,13 @@ public class GameManager : MonoBehaviour
 
         player.HealthComponent.OnCharacterDeath += CharacterDeathHandler;
 
+        Camera.main.GetComponent<CameraFollow>().SetTarget(player.transform);
+
         gameSessionTime = 0;
         scoreSystem.StartGame();
 
+        
+        
         isGameActive = true;
     }
 
@@ -92,12 +108,15 @@ public class GameManager : MonoBehaviour
         scoreSystem.EndGame();
         Debug.Log("Victory!");
         isGameActive = false;
+        uiManager.ShowWinMenu();
     }
 
     private void GameOver()
     {
+        isGameActive = false;
         scoreSystem.EndGame();
         Debug.Log("Defeat!");
-        isGameActive = false;
+        //characterFactory.KillAllEnemies();
+        uiManager.ShowLoseMenu();
     }
 }

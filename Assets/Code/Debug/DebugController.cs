@@ -13,22 +13,6 @@ public class DebugController : MonoBehaviour
             KillAllEnemies();
         }
 
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            var hero = GameManager.Instance.CharacterFactory.Hero;
-
-            if (hero == null || hero.HealthComponent == null)
-                return;
-
-            
-            var newHealth = new HealthBoosterTier1Decorator(hero.HealthComponent, 10);
-
-            newHealth.Initialize(hero); // важно
-
-            hero.SetHealthComponent(newHealth);
-
-            Debug.Log("HP Boost applied (+20)");
-        }
     }
 
     private void KillAllEnemies()

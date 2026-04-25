@@ -41,15 +41,15 @@ public class MoveComponent : MonoBehaviour, IMoveComponent
     {
         if (direction == Vector3.zero) return;
 
-        float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+        float rotationSpeed = 180f; // ← регулируй (градусы/сек)
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
 
-        float angle = Mathf.SmoothDampAngle(
-            selfCharacter.transform.eulerAngles.y,
-            targetAngle,
-            ref turnSmoothVelocity,
-            0.1f
-        );
+        
 
-        selfCharacter.transform.rotation = Quaternion.Euler(0, angle, 0);
+        selfCharacter.transform.rotation = Quaternion.RotateTowards(
+        characterData.CharacterTransform.rotation,
+        targetRotation,
+        rotationSpeed * Time.deltaTime
+    );
     }
 }
