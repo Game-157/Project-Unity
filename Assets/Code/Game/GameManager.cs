@@ -10,9 +10,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private UI_Manager uiManager;
 
-    private ScoreSystem scoreSystem;
-    private WaveManager waveManager;
+    public Transform UIRoot;
 
+    private ScoreSystem scoreSystem;
+    
+    [SerializeField] private WaveManager waveManager;
+    [SerializeField] private LevelController levelController;
     private float gameSessionTime;
     private bool isGameActive;
 
@@ -29,7 +32,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
             Initialize();
         }
         else
@@ -40,12 +43,12 @@ public class GameManager : MonoBehaviour
 
     private void Initialize()
     {
-        
+        startButton.SetActive(true);
 
         scoreSystem = new ScoreSystem();
         isGameActive = false;
 
-        waveManager = gameObject.AddComponent<WaveManager>();
+        //waveManager = gameObject.AddComponent<WaveManager>();
         waveManager.Init(characterFactory, levelConfig);
     }
 
@@ -54,6 +57,8 @@ public class GameManager : MonoBehaviour
         if (isGameActive) return;
 
         startButton.SetActive(false);
+
+        levelController.UpdateLevelUI();
 
         Character player = characterFactory.GetCharacter(CharacterType.Hero);
         player.transform.position = Vector3.zero;
@@ -95,18 +100,21 @@ public class GameManager : MonoBehaviour
                 break;
 
             case CharacterType.DefaultEnemy:
-                scoreSystem.AddScore(deathCharacter.CharacterData.ScoreCost);
+                levelController.AddExperience(15);
+                levelController.UpdateLevelUI();
                 break;
         }
 
         deathCharacter.gameObject.SetActive(false);
         characterFactory.ReturnCharacter(deathCharacter);
-    }
 
-    private void GameVictory()
+        Debug.Log("CharacterDeathHandler CALLED");
+    }
+    
+    public void GameVictory()
     {
         scoreSystem.EndGame();
-        Debug.Log("Victory!");
+        
         isGameActive = false;
         uiManager.ShowWinMenu();
     }
@@ -115,7 +123,6 @@ public class GameManager : MonoBehaviour
     {
         isGameActive = false;
         scoreSystem.EndGame();
-        Debug.Log("Defeat!");
         //characterFactory.KillAllEnemies();
         uiManager.ShowLoseMenu();
     }

@@ -73,6 +73,9 @@ MonoBehaviour:
   healthComponent: {fileID: -1682253338566848055}
   moveComponent: {fileID: -1748681933646030780}
   attackComponent: {fileID: -151313596888143452}
+  hpBarPrefab: {fileID: -1320667037826232876, guid: 26887521a735e134db2bea0bdf2ab706, type: 3}
+  enterRadius: 5
+  exitRadius: 6
 --- !u!114 &3935663404825396860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,7 +90,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterController: {fileID: 3935663404825396850}
   characterTransform: {fileID: 3935663404825396861}
-  defaultSpeed: 5
+  defaultSpeed: 10
+  defaultAttack: 50
   scoreCost: 0
 --- !u!114 &-1682253338566848055
 MonoBehaviour:
@@ -115,6 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68bca2803befe6046ae974cf7c0e5e28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterData: {fileID: 3935663404825396860}
 --- !u!114 &-1748681933646030780
 MonoBehaviour:
   m_ObjectHideFlags: 0

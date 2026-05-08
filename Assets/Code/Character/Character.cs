@@ -10,6 +10,7 @@ public abstract class Character : MonoBehaviour
     [SerializeField] private MoveComponent moveComponent;
     [SerializeField] private AttackComponent attackComponent;
 
+    [SerializeField] private HPBarUI hpBarPrefab;
 
     public IMoveComponent MoveComponent { get; private set; }
     public IAttackComponent AttackComponent { get; private set; }
@@ -33,6 +34,7 @@ public abstract class Character : MonoBehaviour
         attackComponent.Initialize(this);
         healthComponent.Initialize(this);
 
+        CreateHPBar();
 
     }
 
@@ -40,6 +42,14 @@ public abstract class Character : MonoBehaviour
 
     protected abstract void Update();
     
+    private void CreateHPBar()
+    {
+        if (hpBarPrefab == null)
+            return;
 
+        HPBarUI bar = Instantiate(hpBarPrefab, GameManager.Instance.UIRoot);
+
+        bar.Initialize(transform, HealthComponent);
+    }
     
 }

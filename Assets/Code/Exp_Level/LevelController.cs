@@ -20,34 +20,45 @@ public class LevelController : MonoBehaviour
 
     void Start()
     {
+        levelData.level = 1;
+        levelData.experience = 0;
         CalculateExpForLevel(levelData.level);
+
     }
 
-    void Update()
+    public void UpdateLevelUI()
     {
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            levelBarUI.SetValues(levelData.experience, levelData.experienceLevelUp);
+        levelBarUI.SetValues(levelData.experience, levelData.experienceLevelUp);
 
-            levelData.experience += levelData.experienceCrip;
-            
-            Debug.Log($"+{levelData.experienceCrip} experience");
-        }
+        levelText.text = $"{levelData.level}";
+        expIndicator.text = $"{levelData.experience} / {levelData.experienceLevelUp}";
+    }
 
-        if (levelData.experience >= levelData.experienceLevelUp && levelData.level < levelData.maxLevel)
-        {
-            
-            levelData.level++;
-            levelData.experience -= levelData.experienceLevelUp; 
-            CalculateExpForLevel(levelData.level);
-            levelBarUI.SetValues(levelData.experience, levelData.experienceLevelUp);
-        }
-
+    public void AddExperience(int amount)
+    {
         if (levelData.level >= levelData.maxLevel)
-        {
-            levelText.text = $"{levelData.level}";
             return;
+
+        levelData.experience += amount;
+
+        Debug.Log($"+{amount} experience");
+
+        while (levelData.experience >= levelData.experienceLevelUp)
+        {
+            levelData.experience -= levelData.experienceLevelUp;
+
+            levelData.level++;
+
+            CalculateExpForLevel(levelData.level);
+
+            if (levelData.level >= levelData.maxLevel)
+            {
+                levelData.level = levelData.maxLevel;
+                break;
+            }
         }
+
+        levelBarUI.SetValues(levelData.experience, levelData.experienceLevelUp);
 
         levelText.text = $"{levelData.level}";
         expIndicator.text = $"{levelData.experience} / {levelData.experienceLevelUp}";

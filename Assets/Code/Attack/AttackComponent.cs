@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class AttackComponent : MonoBehaviour, IAttackComponent
 {
-    private CharacterData characterData;
+    [SerializeField] private CharacterData characterData;
     private Character selfCharacter;
     public float Damage => 15;
     public float AttackRange => 3.0f;
@@ -28,7 +28,7 @@ public class AttackComponent : MonoBehaviour, IAttackComponent
         if (attackTimer > 0)
             return;
 
-        attackTarget.SetDamage((int)Damage);
+        attackTarget.SetDamage(characterData.DefaultAttack);
 
         attackTimer = AttackCooldown;
 

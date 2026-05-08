@@ -12,6 +12,21 @@ public class WaveManager : MonoBehaviour
 
     private float spawnTimer;
 
+    [SerializeField] private WaveBarUI waveBarUI;
+
+    [SerializeField] private SpawnZoneController[] spawnZonesController;
+
+
+    private int killedEnemies;
+
+    private void Awake()
+    {
+        waveBarUI = FindObjectOfType<WaveBarUI>();
+
+        if (waveBarUI == null)
+            Debug.LogError("WaveBarUI NOT FOUND IN SCENE!");
+    }
+
     public void Init(CharacterFactory factory, LevelConfig levelConfig)
     {
         this.factory = factory;
@@ -62,13 +77,18 @@ public class WaveManager : MonoBehaviour
         if (index >= levelConfig.waves.Count)
         {
             Debug.Log("LEVEL COMPLETE");
+            GameManager.Instance.GameVictory();
             return;
         }
 
         currentWaveIndex = index;
         spawnedEnemies = 0;
+    
+        killedEnemies = 0;
 
         spawnTimer = levelConfig.waves[index].spawnDelay;
+
+        
 
         Debug.Log($"Start Wave: {currentWaveIndex + 1}");
     }
@@ -77,17 +97,28 @@ public class WaveManager : MonoBehaviour
     {
         Character enemy = factory.GetCharacter(wave.enemyType);
 
-        Vector3 spawnPos = hero.transform.position + GetRandomOffset(wave);
-        spawnPos.y = 0;
+        SpawnZoneController zone = spawnZonesController[Random.Range(0, spawnZonesController.Length)];
+
+        Vector3 spawnPos = zone.GetRandomPoint();
 
         enemy.transform.position = spawnPos;
 
         enemy.gameObject.SetActive(true);
         enemy.Initialize();
 
-        if (enemy.HealthComponent != null && GameManager.Instance != null)
+        
+
+        if (enemy.HealthComponent != null)
         {
-            enemy.HealthComponent.OnCharacterDeath += GameManager.Instance.CharacterDeathHandler;
+            enemy.HealthComponent.OnCharacterDeath -= OnEnemyDeath;
+            enemy.HealthComponent.OnCharacterDeath += OnEnemyDeath;
+
+            
+            if (GameManager.Instance != null)
+            {
+                enemy.HealthComponent.OnCharacterDeath -= GameManager.Instance.CharacterDeathHandler;
+                enemy.HealthComponent.OnCharacterDeath += GameManager.Instance.CharacterDeathHandler;
+            }
         }
 
         if (enemy is EnemyCharacter enemyCharacter)
@@ -115,5 +146,34 @@ public class WaveManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void OnEnemyDeath(Character character)
+    {
+        
+        if (character.CharacterType != CharacterType.DefaultEnemy)
+            return;
+
+        killedEnemies++;
+
+        
+
+        UpdateWaveUI();
+    }
+
+    private void UpdateWaveUI()
+    {
+        
+        if (waveBarUI == null)
+            return;
+
+        
+        var wave = levelConfig.waves[currentWaveIndex];
+
+        float progress = (float)killedEnemies / wave.enemyCount;
+
+        Debug.Log("Progress: " + progress);
+
+        waveBarUI.SetProgress(progress);
     }
 }

@@ -107,6 +107,7 @@ MonoBehaviour:
   characterController: {fileID: -9060747699282234542}
   characterTransform: {fileID: 6504526982639613453}
   defaultSpeed: 3
+  defaultAttack: 5
   scoreCost: 100
 --- !u!114 &4076674216325253635
 MonoBehaviour:
@@ -125,8 +126,10 @@ MonoBehaviour:
   healthComponent: {fileID: 4954778938019555415}
   moveComponent: {fileID: 5802361137235382651}
   attackComponent: {fileID: 6640459532628189806}
+  hpBarPrefab: {fileID: -1320667037826232876, guid: 26887521a735e134db2bea0bdf2ab706, type: 3}
   aiState: 2
   characterTarget: {fileID: 0}
+  detectionRadius: 5
 --- !u!114 &4954778938019555415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,6 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68bca2803befe6046ae974cf7c0e5e28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterData: {fileID: -8077647386022447616}
 --- !u!4 &6504526982639613453 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 110fd9d2db6234740b14232ee48c53c3, type: 3}
